@@ -64,7 +64,7 @@ ZTEnd é uma solução para provedores de internet que deixam seus roteadores pr
 
 Acesse o site oficial do Python e veja como baixar a versão mais recente do Python: https://www.python.org/
 
-Após o download do Python e do projeto, abra a pasta do ZTEnd e execute o arquivo ```instalar_dependencias.bat```, se a instalação das dependencias acontecer sem erros, você ja pode usar o programa.
+Após o download do Python e do projeto, abra a pasta do ZTEnd e execute o arquivo ```install_dependencies.bat```, se a instalação das dependencias acontecer sem erros, você ja pode usar o programa.
 
 * ⚠️ Possiveis erros e problemas e suas correções:
 ```'pip' is not recognized as an internal or external command```:
