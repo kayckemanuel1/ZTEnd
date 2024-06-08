@@ -33,9 +33,9 @@ Run the file ```ZTEnd_start.bat```. A graphical interface will be displayed, req
 
 ## 🔙 Error Output
 
-* Interface not found: This means that you have misspelled the network interface name.
+* A interface não foi encontrada/Interface not found: This means that you have misspelled the network interface name.
 
-* Network disconnected: This means that your computer is not connected to the network. Check if your machine is in the same IP range as the gateway and if the cable connection (if any) is properly plugged in.
+* Rede desconectada/Network disconnected: This means that your computer is not connected to the network. Check if your machine is in the same IP range as the gateway and if the cable connection (if any) is properly plugged in.
 
 * integrity check failed: Error in the router configuration file integrity. Verify that you selected the correct file and that the file is not corrupted. If the problem persists, access a configured router and download the configurations again.
 
