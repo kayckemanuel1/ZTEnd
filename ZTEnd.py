@@ -13,7 +13,6 @@ import time
 import tkinter as tk
 from tkinter import messagebox, filedialog, ttk
 
-
 def descobrir_gateways():
     sistema = platform.system()
     
@@ -59,69 +58,73 @@ def verificar_conexao_ethernet(interface_name):
     else:
         raise ValueError(f"A interface {interface_name} não foi encontrada. Por favor verifique se você inseriu corretamente o nome da interface de rede, lembre-se de respeitar as letras maiusculas e minusculas e os espaços.")
 
-def algoritimo_upload(interface_rede, file_path, gateway, headless):
+def download_chromedriver():
     try:
-        
+        chromedriver_path = ChromeDriverManager().install()
+        messagebox.showinfo('Informação', f'O Chromedriver foi baixado e salvo em {chromedriver_path}. Você pode desconectar da internet agora.')
+        return chromedriver_path
+    except Exception as e:
+        messagebox.showerror('Erro', f'Erro ao baixar o Chromedriver: {e}')
+        return None
+
+def algoritimo_upload(interface_rede, file_path, gateway, headless, chromedriver_path):
+    try:
         if not verificar_conexao_ethernet(interface_name=interface_rede):
             messagebox.showerror('Erro', 'Rede desconectada, verifique as conexões e o status da rede.')
             return
         
-        else: # Está conectado
-            
-            #Dados
-            url = 'http://' + gateway
-            user_pass = 'multipro'
+        # Dados
+        url = 'http://' + gateway
+        user_pass = 'multipro'
 
-            messagebox.showinfo('Informação', f'Rede conectada!\nGateway: {gateway}')
-            
-            #Configurações navegador
-            chrome_options = Options()
-            if headless:
-                chrome_options.add_argument("--headless")
+        messagebox.showinfo('Informação', f'Rede conectada!\nGateway: {gateway}')
+        
+        # Configurações navegador
+        chrome_options = Options()
+        if headless:
+            chrome_options.add_argument("--headless")
 
-            service = Service(ChromeDriverManager().install())
-            navegador = webdriver.Chrome(service=service, options=chrome_options)
-            
-            #Acessa o roteador
-            navegador.get(url)
+        service = Service(chromedriver_path)
+        navegador = webdriver.Chrome(service=service, options=chrome_options)
+        
+        # Acessa o roteador
+        navegador.get(url)
 
-            # Login
-            WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="Frm_Username"]'))).send_keys(user_pass)
-            navegador.find_element(By.XPATH, '//*[@id="Frm_Password"]').send_keys(user_pass)
-            # navegador.find_element(By.XPATH, '//*[@id="Frm_ShowPrivacy"]').click()
-            navegador.find_element(By.XPATH, '//*[@id="LoginId"]').click()
-            time.sleep(0.5)
+        # Login
+        WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="Frm_Username"]'))).send_keys(user_pass)
+        navegador.find_element(By.XPATH, '//*[@id="Frm_Password"]').send_keys(user_pass)
+        navegador.find_element(By.XPATH, '//*[@id="LoginId"]').click()
+        time.sleep(0.5)
 
-            # Chegando à aba de upload
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Btn_Close"]'))).click()
-            time.sleep(0.5)
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mgrAndDiag"]'))).click()
-            time.sleep(0.5)
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="devMgr"]'))).click()
-            time.sleep(0.5)
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="defCfgMgr"]'))).click()
-            time.sleep(0.5)
+        # Chegando à aba de upload
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Btn_Close"]'))).click()
+        time.sleep(0.5)
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mgrAndDiag"]'))).click()
+        time.sleep(0.5)
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="devMgr"]'))).click()
+        time.sleep(0.5)
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="defCfgMgr"]'))).click()
+        time.sleep(0.5)
 
-            # Localizar o campo de upload e enviar o arquivo
-            upload_element = WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="defConfigUpload"]')))
-            upload_element.send_keys(file_path)
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="DefConfUploadBar"]'))).click()
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Btn_Upload"]'))).click()
-            WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="confirmOK"]'))).click()
+        # Localizar o campo de upload e enviar o arquivo
+        upload_element = WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="defConfigUpload"]')))
+        upload_element.send_keys(file_path)
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="DefConfUploadBar"]'))).click()
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Btn_Upload"]'))).click()
+        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="confirmOK"]'))).click()
 
-            # Verificação resultado do upload
+        # Verificação resultado do upload
+        confirm_msg = WebDriverWait(navegador, 30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="confirmMsg"]/p'))).text
+        if "processing, please wait" in confirm_msg.lower() or "Are you sure to restore user configuration?" in confirm_msg.lower():
+            messagebox.showinfo('Informação', "Fazendo upload do arquivo, por favor aguarde.")
+            time.sleep(1.5)
             confirm_msg = WebDriverWait(navegador, 30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="confirmMsg"]/p'))).text
-            if "processing, please wait" or "Are you sure to restore user configuration?" in confirm_msg.lower():
-                messagebox.showinfo('Informação', "Fazendo upload do arquivo, por favor aguarde.")
-                time.sleep(1.5)
-                confirm_msg = WebDriverWait(navegador, 30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="confirmMsg"]/p'))).text
-                if "integrity check failed" in confirm_msg.lower():
-                    messagebox.showerror('Erro', 'Erro de integridade, Verifique se você selecionou o arquivo correto e se o arquivo não está corrompido.')
-                else:
-                    messagebox.showinfo('Sucesso no upload!', 'Upload feito com sucesso. Desligue e ligue o roteador manualmente pelo botão power.')
+            if "integrity check failed" in confirm_msg.lower():
+                messagebox.showerror('Erro', 'Erro de integridade, Verifique se você selecionou o arquivo correto e se o arquivo não está corrompido.')
             else:
-                messagebox.showerror('Erro', f"Erro ao realizar upload: {confirm_msg}")
-                
+                messagebox.showinfo('Sucesso no upload!', 'Upload feito com sucesso. Desligue e ligue o roteador manualmente pelo botão power.')
+        else:
+            messagebox.showerror('Erro', f"Erro ao realizar upload: {confirm_msg}")
                 
     except Exception as e:
         messagebox.showerror('Erro', str(e))
@@ -166,18 +169,31 @@ headless_var = tk.BooleanVar(value=True)  # Faz o script ser executado de forma 
 check_headless = tk.Checkbutton(root, text="Modo Headless", variable=headless_var)
 check_headless.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
 
+chromedriver_path = None
+
+def baixar_chromedriver():
+    global chromedriver_path
+    chromedriver_path = download_chromedriver()
+
+btn_baixar_chromedriver = tk.Button(root, text="Baixar Chromedriver", command=baixar_chromedriver)
+btn_baixar_chromedriver.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
+
 def executar_algoritmo():
     try:
+        if not chromedriver_path:
+            messagebox.showerror('Erro', 'Por favor, baixe o Chromedriver antes de executar o algoritmo.')
+            return
+
         rota_selecionada = rota_combobox.get()
         if not rota_selecionada:
             messagebox.showerror('Erro', 'Por favor, selecione uma rota.')
             return
         gateway = rota_selecionada.split(' - ')[1].split(' (')[0]
-        algoritimo_upload(interface_rede.get(), file_path_entry.get(), gateway, headless_var.get())
+        algoritimo_upload(interface_rede.get(), file_path_entry.get(), gateway, headless_var.get(), chromedriver_path)
     except Exception as e:
         messagebox.showerror('Erro', str(e))
 
 btn_executar = tk.Button(root, text="Executar", command=executar_algoritmo)
-btn_executar.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
+btn_executar.grid(row=5, column=0, columnspan=3, padx=10, pady=10)
 
 root.mainloop()
