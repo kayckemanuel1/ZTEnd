@@ -22,6 +22,8 @@ If you have installed Python and this error persists, it is because the path to 
 
 * ⚠️ Manually reset the router using the reset button located near the power button. You can use a paper clip or a pin for this. Press the reset button until the power LED turns off.
 
+* Click the "Download chromedriver" button to download the chromedriver; it is necessary to have an internet connection at this stage. After the download, an internet connection is no longer required, and you can then connect your computer to the router that will be configured without the router necessarily needing internet access.
+
 Run the file ```ZTEnd_start.bat```. A graphical interface will be displayed, requiring the following information:
 * Interface Name: This field should be filled with the name of the network interface you are using to connect to the router to be configured. For example, Ethernet, Ethernet 2. Check the name of your network interface in the control panel. Be mindful of uppercase and lowercase letters.
 
@@ -73,6 +75,8 @@ Se você já instalou o Python e esse erro permanece, isso é porque o caminho p
 ## 🎠 Como usar
 
 * ⚠️ Resete manualmente o roteador através do botão de reset que fica próximo ao botão power, você pode usar um grampo ou um palito para isso, pressione o botão de reset até que o LED de power se apague.
+
+* Clique no botão "Baixar chormedriver" para fazer o donwload do chormedrive; é necessário que nessa etapa você tenha conectividade com a internet. Após o download não é mais necessaria a conexão com a internet e então você já podera conectar seu computador ao roteador que será configurado sem este roteador necessáriamente precisar ter acesso a internet.
 
 Execute o arquivo ```ZTEnd_start.bat```, após isso será exibido uma interfaxe gráfica que necessita das seguintes informações: 
 * Nome da interface: Esse campo deve ser preenchido com o nome da interface de rede que você está usando para se conectar ao roteador que será configurado. Ex: Ethernet, Ethernet 2. Verifique o nome da sua interface de rede no painel de controle. Lembre-se de respeitar as letras maiúsculas e minúsculas.
