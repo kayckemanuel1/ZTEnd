@@ -93,6 +93,7 @@ def algoritimo_upload(interface_rede, file_path, gateway, headless, chromedriver
         # Login
         WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="Frm_Username"]'))).send_keys(user_pass)
         navegador.find_element(By.XPATH, '//*[@id="Frm_Password"]').send_keys(user_pass)
+        navegador.find_element(By.XPATH, '//*[@id="Frm_ShowPrivacy"]').click()
         navegador.find_element(By.XPATH, '//*[@id="LoginId"]').click()
         time.sleep(0.5)
 
@@ -114,6 +115,7 @@ def algoritimo_upload(interface_rede, file_path, gateway, headless, chromedriver
         WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="confirmOK"]'))).click()
 
         # Verificação resultado do upload
+        time.sleep(1)
         confirm_msg = WebDriverWait(navegador, 30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="confirmMsg"]/p'))).text
         if "processing, please wait" in confirm_msg.lower() or "Are you sure to restore user configuration?" in confirm_msg.lower():
             messagebox.showinfo('Informação', "Fazendo upload do arquivo, por favor aguarde.")
